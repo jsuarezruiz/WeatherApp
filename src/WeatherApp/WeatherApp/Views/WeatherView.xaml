@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:pancakeView="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+             xmlns:templates="clr-namespace:WeatherApp.Views.Templates"
+             mc:Ignorable="d"
+             x:Class="WeatherApp.Views.WeatherView">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <Style x:Key="BackgroundStyle" TargetType="Image">
+                <Setter Property="Aspect" Value="AspectFill" />
+            </Style>
+
+            <Style x:Key="TempTextStyle" TargetType="Label">
+                <Setter Property="FontFamily" Value="{StaticResource SourceSansProRegular}" />
+                <Setter Property="TextColor" Value="{StaticResource WhiteColor}" />
+                <Setter Property="FontSize" Value="60" />
+                <Setter Property="Margin" Value="12, 48, 0, 0" />
+            </Style>
+
+            <Style x:Key="ConditionTextStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="{StaticResource WhiteColor}" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="Margin" Value="12, 0" />
+            </Style>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem 
+            Icon="reload.png"
+            Text="Reload"
+            Command="{Binding ReloadCommand}"/>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <RefreshView
+            BackgroundColor="{StaticResource WhiteColor}"
+            RefreshColor="{StaticResource AccentColor}"
+            IsRefreshing="{Binding IsBusy}"
+            Command="{Binding ReloadCommand}">
+            <ScrollView>
+                <Grid      
+                    RowSpacing="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid
+                        Grid.Row="0"       
+                        RowSpacing="0"
+                        BackgroundColor="{StaticResource AccentColor}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Image 
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Source="{Binding Condition, Converter={StaticResource BackgroundConverter}}"
+                            Style="{StaticResource BackgroundStyle}"/>
+                        <pancakeView:PancakeView
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            BackgroundGradientAngle="180"
+                            BackgroundGradientStartColor="Transparent"
+                            BackgroundGradientEndColor="{StaticResource AccentColor}"/>
+                        <Label
+                            Grid.Row="0"
+                            Text="{Binding Temp}"
+                            Style="{StaticResource TempTextStyle}"/>
+                        <Label  
+                            Grid.Row="1"
+                            Text="{Binding Condition}"
+                            Style="{StaticResource ConditionTextStyle}"/>
+                    </Grid>
+                    <Grid
+                        Grid.Row="1">
+                        <CollectionView
+                            HeightRequest="150"
+                            ItemsSource="{Binding Forecast.Items}">
+                            <CollectionView.ItemsLayout>
+                                <ListItemsLayout
+                                    Orientation="Horizontal"/>
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <templates:WeatherItemTemplate />
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </Grid>
+                </Grid>
+            </ScrollView>
+        </RefreshView>
+    </ContentPage.Content>
+</ContentPage>
